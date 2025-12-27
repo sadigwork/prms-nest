@@ -15,4 +15,3 @@ export class Publication {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 }
-    
