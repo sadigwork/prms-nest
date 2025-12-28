@@ -8,50 +8,57 @@ import {
   IsEnum,
   IsOptional,
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import { UserRole } from '../enums/user.enum';
 
 export class CreateUserDto {
-  @ApiProperty({ example: 'ahmed@example.com' })
-  @IsEmail()
+  @ApiProperty({
+    example: 'ahmed@example.com',
+    description: 'البريد الإلكتروني',
+  })
+  @IsEmail({}, { message: 'validation.email' })
   email: string;
 
-  @ApiProperty({ example: 'Password123!' })
-  @IsString()
-  @MinLength(8)
-  @MaxLength(32)
+  @ApiProperty({ example: 'Password123!', description: 'كلمة المرور' })
+  @IsString({ message: 'validation.required' })
+  @MinLength(8, { message: 'validation.min_length' })
+  @MaxLength(32, { message: 'validation.max_length' })
   @Matches(/((?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/, {
-    message: 'password too weak',
+    message: 'validation.password_strength',
   })
   password: string;
 
-  @ApiProperty({ example: 'Ahmed' })
-  @IsString()
-  @MinLength(2)
-  @MaxLength(50)
+  @ApiProperty({ example: 'أحمد', description: 'الاسم الأول' })
+  @IsString({ message: 'validation.required' })
+  @MinLength(2, { message: 'validation.min_length' })
+  @MaxLength(50, { message: 'validation.max_length' })
   firstName: string;
 
-  @ApiProperty({ example: 'Mohamed' })
-  @IsString()
-  @MinLength(2)
-  @MaxLength(50)
+  @ApiProperty({ example: 'محمد', description: 'اسم العائلة' })
+  @IsString({ message: 'validation.required' })
+  @MinLength(2, { message: 'validation.min_length' })
+  @MaxLength(50, { message: 'validation.max_length' })
   lastName: string;
 
-  @ApiProperty({ example: '29801010123456' })
-  @IsString()
-  @Matches(/^\d{14}$/, { message: 'National ID must be 14 digits' })
+  @ApiProperty({ example: '29801010123456', description: 'رقم الهوية الوطنية' })
+  @IsString({ message: 'validation.required' })
+  @Matches(/^\d{14}$/, { message: 'validation.national_id' })
   nationalId: string;
 
-  @ApiProperty({ example: '+201234567890' })
-  @IsString()
-  @Matches(/^\+?\d{10,15}$/)
+  @ApiProperty({ example: '+201234567890', description: 'رقم الهاتف' })
+  @IsString({ message: 'validation.required' })
+  @Matches(/^\+?\d{10,15}$/, { message: 'validation.phone_number' })
   phoneNumber: string;
 
-  @ApiProperty({ example: '1990-01-01' })
-  @IsDateString()
+  @ApiProperty({ example: '1990-01-01', description: 'تاريخ الميلاد' })
+  @IsDateString({}, { message: 'validation.date_format' })
   dateOfBirth: Date;
 
-  @ApiProperty({ enum: UserRole, default: UserRole.APPLICANT })
+  @ApiPropertyOptional({
+    enum: UserRole,
+    default: UserRole.APPLICANT,
+    description: 'الدور',
+  })
   @IsEnum(UserRole)
   @IsOptional()
   role?: UserRole;
